@@ -76,16 +76,29 @@ class _MyHomePageState extends State<MyHomePage> {
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (!snapshot.hasData) return Container();
             List<Map<String, String>> events = snapshot.data;
+                  var date = "";
             return ListView.builder(
                 padding: const EdgeInsets.all(8),
                 itemCount: events.length,
                 itemBuilder: (BuildContext context, int index) {
                   var event = events[index];
-                  return Card(
-                      child: ListTile(
-                    leading: Text(event['time']),
-                    title: Text(event['description']),
-                  ));
+                  var hasNewDate = false;
+                  if(date != event['date'])
+                  {
+                    date = event['date'];
+                    hasNewDate = true;
+                  }
+                  
+                  return Column(
+                    children: <Widget>[
+                      hasNewDate?Text(date):Container(),
+                      Card(
+                          child: ListTile(
+                        leading: Text(event['time']),
+                        title: Text(event['description']),
+                      )),
+                    ],
+                  );
                 });
           },
         ),
