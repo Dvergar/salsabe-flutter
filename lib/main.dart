@@ -54,20 +54,30 @@ class _MyHomePageState extends State<MyHomePage> {
         var hour = hourElement.text.trim();
         var description =
             eventRow.querySelector('td').text.replaceAll(RegExp(r'\s+'), " ");
-        print(description);
+        description = description.trim();
 
-        RegExp re = new RegExp(r'(.+?) - (?:(.+?) - )?(.+?)(?:\(([^()]+)\))?$',
+        RegExp re = new RegExp(r'(.+?) - (?:(.+?) - )?(.+?)(?: \(([^()]+)\))?$',
             caseSensitive: false, multiLine: true);
         var match = re.firstMatch(description);
-        print(re.hasMatch(description));
         if(match != null)
-          print(match.group(0));
+          print('|${match.group(0)}|');
+
+RegExp reCity = new RegExp(r'^.+?\d+ (.+?)(?: \([^()]+\))?$',
+            caseSensitive: false, multiLine: true);
+        var cityMatch = reCity.firstMatch(match.group(3));
+        print(match.group(1));
+        print(match.group(2));
+        print(match.group(3));
+        print(match.group(4));
+        print(cityMatch.group(1));
+        print("--------------");
 
         var event = Event(
             name: match.group(1),
             place: match.group(2) ?? "",
             address: match.group(3),
-            suffix: match.group(4),
+            city: cityMatch.group(1),
+            suffix: match.group(4) ?? "N/A",
             date: date,
             hour: hour);
 
@@ -125,6 +135,7 @@ class Event {
   String name;
   String place;
   String address;
+  String city;
   String suffix;
   String date;
   String hour;
@@ -133,6 +144,7 @@ class Event {
       {this.name,
       this.place,
       this.address,
+      this.city,
       this.suffix,
       this.date,
       this.hour});
