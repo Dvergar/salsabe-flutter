@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:html/parser.dart';
 import 'package:html/dom.dart' as doom;
+import 'package:salsabe/foursquare_bloc.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 void main() => runApp(MyApp());
 
@@ -50,10 +52,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var clientId = "";
-  var clientSecret = "";
-  Future<bool> keysLoaded;
-
   Future<List<Event>> scrape() async {
     List<Event> events = [];
 
@@ -85,11 +83,11 @@ class _MyHomePageState extends State<MyHomePage> {
         RegExp reCity = new RegExp(r'^.+?\d+ (.+?)(?: \([^()]+\))?$',
             caseSensitive: false, multiLine: true);
         var cityMatch = reCity.firstMatch(match.group(3));
-        print(match.group(1));
-        print(match.group(2));
-        print(match.group(3));
-        print(match.group(4));
-        print(cityMatch.group(1));
+        // print(match.group(1));
+        // print(match.group(2));
+        // print(match.group(3));
+        // print(match.group(4));
+        // print(cityMatch.group(1));
         print("--------------");
 
         var event = Event(
@@ -135,12 +133,45 @@ class _MyHomePageState extends State<MyHomePage> {
                 return Column(
                   children: <Widget>[
                     hasNewDate ? Text(date) : Container(),
-                    Card(
-                        child: ListTile(
-                      leading: Text(event.hour),
-                      title: Text(event.name),
-                      subtitle: Text(event.place),
-                    )),
+                    ClipRRect(
+                      borderRadius:
+                                                  BorderRadius.circular(18.0),
+                                          child: Container(
+                        height:100,
+                        child: Stack(
+                          children: <Widget>[
+                            ColorFiltered(
+                                colorFilter:
+                                    ColorFilter.mode(Colors.grey, BlendMode.darken),
+                                child: FutureBuilder(
+                                  future: foursquareBloc.getDummyPhoto(
+                                      place: event.place,
+                                      city: event.city,
+                                      foursquareKey: widget.foursquareKey),
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot snapshot) {
+                                    print("----${snapshot.data}");
+                                    if (!snapshot.hasData) return Container();
+                                    return FadeInImage.memoryNetwork(
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                      fit: BoxFit.cover,
+                                      placeholder: kTransparentImage,
+                                      image: snapshot.data,
+                                    );
+                                  },
+                                )),
+                            Container(
+                              // height:100,
+                                child: ListTile(
+                              leading: Text(event.hour),
+                              title: Text(event.name),
+                              subtitle: Text(event.place),
+                            )),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 );
               });
