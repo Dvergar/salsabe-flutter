@@ -1,37 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:html/parser.dart';
 import 'package:html/dom.dart' as doom;
 
 void main() => runApp(MyApp());
 
+class FoursquareKey {
+  String clientId;
+  String clientSecret;
+  FoursquareKey({this.clientId, this.clientSecret});
+}
+
 class MyApp extends StatelessWidget {
+  Future<FoursquareKey> getKey() async {
+    var keyString = await rootBundle.loadString("assets/key.txt");
+
+    var splitKey = keyString.split(" ");
+    return FoursquareKey(clientId: splitKey[0], clientSecret: splitKey[1]);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Salsa.be'),
-    );
+    return FutureBuilder(
+        future: getKey(),
+        builder: (BuildContext context, AsyncSnapshot<FoursquareKey> snapshot) {
+          return snapshot.data == null
+              ? Center(child: CircularProgressIndicator())
+              : MaterialApp(
+                  title: 'Flutter Demo',
+                  theme: ThemeData(
+                    primarySwatch: Colors.blue,
+                  ),
+                  home: MyHomePage(
+                      title: 'Salsa.be', foursquareKey: snapshot.data),
+                );
+        });
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key key, this.title, this.foursquareKey}) : super(key: key);
 
   final String title;
+  final FoursquareKey foursquareKey;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  @override
-  void initState() {
-    super.initState();
-  }
+  var clientId = "";
+  var clientSecret = "";
+  Future<bool> keysLoaded;
 
   Future<List<Event>> scrape() async {
     List<Event> events = [];
@@ -59,10 +80,9 @@ class _MyHomePageState extends State<MyHomePage> {
         RegExp re = new RegExp(r'(.+?) - (?:(.+?) - )?(.+?)(?: \(([^()]+)\))?$',
             caseSensitive: false, multiLine: true);
         var match = re.firstMatch(description);
-        if(match != null)
-          print('|${match.group(0)}|');
+        if (match != null) print('|${match.group(0)}|');
 
-RegExp reCity = new RegExp(r'^.+?\d+ (.+?)(?: \([^()]+\))?$',
+        RegExp reCity = new RegExp(r'^.+?\d+ (.+?)(?: \([^()]+\))?$',
             caseSensitive: false, multiLine: true);
         var cityMatch = reCity.firstMatch(match.group(3));
         print(match.group(1));
@@ -95,38 +115,37 @@ RegExp reCity = new RegExp(r'^.+?\d+ (.+?)(?: \([^()]+\))?$',
         title: Text(widget.title),
       ),
       body: Center(
-        child: FutureBuilder<List<Event>>(
-          future: scrape(),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (!snapshot.hasData) return Container();
-            List<Event> events = snapshot.data;
-            var date = "";
-            return ListView.builder(
-                padding: const EdgeInsets.all(8),
-                itemCount: events.length,
-                itemBuilder: (BuildContext context, int index) {
-                  var event = events[index];
-                  var hasNewDate = false;
-                  if (date != event.date) {
-                    date = event.date;
-                    hasNewDate = true;
-                  }
+          child: FutureBuilder<List<Event>>(
+        future: scrape(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (!snapshot.hasData) return Container();
+          List<Event> events = snapshot.data;
+          var date = "";
+          return ListView.builder(
+              padding: const EdgeInsets.all(8),
+              itemCount: events.length,
+              itemBuilder: (BuildContext context, int index) {
+                var event = events[index];
+                var hasNewDate = false;
+                if (date != event.date) {
+                  date = event.date;
+                  hasNewDate = true;
+                }
 
-                  return Column(
-                    children: <Widget>[
-                      hasNewDate ? Text(date) : Container(),
-                      Card(
-                          child: ListTile(
-                        leading: Text(event.hour),
-                        title: Text(event.name),
-                        subtitle: Text(event.place),
-                      )),
-                    ],
-                  );
-                });
-          },
-        ),
-      ),
+                return Column(
+                  children: <Widget>[
+                    hasNewDate ? Text(date) : Container(),
+                    Card(
+                        child: ListTile(
+                      leading: Text(event.hour),
+                      title: Text(event.name),
+                      subtitle: Text(event.place),
+                    )),
+                  ],
+                );
+              });
+        },
+      )),
     );
   }
 }
