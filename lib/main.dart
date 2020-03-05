@@ -30,12 +30,11 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
-    // scrape();
     super.initState();
   }
 
-  Future<List<Map<String, String>>> scrape() async {
-    List<Map<String, String>> events = [];
+  Future<List<Event>> scrape() async {
+    List<Event> events = [];
 
     var client = Client();
     Response response =
@@ -52,12 +51,27 @@ class _MyHomePageState extends State<MyHomePage> {
       } else {
         var hourElement = eventRow.querySelector('th');
         if (hourElement == null) continue; // Empty row
-        var time = hourElement.text.trim();
+        var hour = hourElement.text.trim();
         var description =
             eventRow.querySelector('td').text.replaceAll(RegExp(r'\s+'), " ");
         print(description);
 
-        events.add({'date': date, 'time': time, 'description': description});
+        RegExp re = new RegExp(r'(.+?) - (?:(.+?) - )?(.+?)(?:\(([^()]+)\))?$',
+            caseSensitive: false, multiLine: true);
+        var match = re.firstMatch(description);
+        print(re.hasMatch(description));
+        if(match != null)
+          print(match.group(0));
+
+        var event = Event(
+            name: match.group(1),
+            place: match.group(2) ?? "",
+            address: match.group(3),
+            suffix: match.group(4),
+            date: date,
+            hour: hour);
+
+        events.add(event);
       }
     }
 
@@ -71,31 +85,31 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: FutureBuilder<List<Map<String, String>>>(
+        child: FutureBuilder<List<Event>>(
           future: scrape(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (!snapshot.hasData) return Container();
-            List<Map<String, String>> events = snapshot.data;
-                  var date = "";
+            List<Event> events = snapshot.data;
+            var date = "";
             return ListView.builder(
                 padding: const EdgeInsets.all(8),
                 itemCount: events.length,
                 itemBuilder: (BuildContext context, int index) {
                   var event = events[index];
                   var hasNewDate = false;
-                  if(date != event['date'])
-                  {
-                    date = event['date'];
+                  if (date != event.date) {
+                    date = event.date;
                     hasNewDate = true;
                   }
-                  
+
                   return Column(
                     children: <Widget>[
-                      hasNewDate?Text(date):Container(),
+                      hasNewDate ? Text(date) : Container(),
                       Card(
                           child: ListTile(
-                        leading: Text(event['time']),
-                        title: Text(event['description']),
+                        leading: Text(event.hour),
+                        title: Text(event.name),
+                        subtitle: Text(event.place),
                       )),
                     ],
                   );
@@ -105,4 +119,21 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+}
+
+class Event {
+  String name;
+  String place;
+  String address;
+  String suffix;
+  String date;
+  String hour;
+
+  Event(
+      {this.name,
+      this.place,
+      this.address,
+      this.suffix,
+      this.date,
+      this.hour});
 }
