@@ -115,68 +115,90 @@ class _MyHomePageState extends State<MyHomePage> {
       body: FutureBuilder<List<Event>>(
         future: scrape(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-      if (!snapshot.hasData) return Container();
-      List<Event> events = snapshot.data;
-      var date = "";
-      return ListView.builder(
-          padding: const EdgeInsets.all(8),
-          itemCount: events.length,
-          itemBuilder: (BuildContext context, int index) {
-            var event = events[index];
-            var hasNewDate = false;
-            if (date != event.date) {
-              date = event.date;
-              hasNewDate = true;
-            }
+          if (!snapshot.hasData) return Container();
+          List<Event> events = snapshot.data;
+          var date = "";
+          return ListView.builder(
+              padding: const EdgeInsets.all(8),
+              itemCount: events.length,
+              itemBuilder: (BuildContext context, int index) {
+                var event = events[index];
+                var hasNewDate = false;
+                if (date != event.date) {
+                  date = event.date;
+                  hasNewDate = true;
+                }
 
-            return Column(
-              children: <Widget>[
-                hasNewDate ? Text(date) : Container(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical:8.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(18.0),
-                    child: Container(
-                      height: 100,
-                      child: Stack(
-                        children: <Widget>[
-                          ColorFiltered(
-                              colorFilter: ColorFilter.mode(
-                                  Colors.grey, BlendMode.darken),
-                              child: FutureBuilder(
-                                future: foursquareBloc.getDummyPhoto(
-                                    place: event.place,
-                                    city: event.city,
-                                    foursquareKey: widget.foursquareKey),
-                                builder: (BuildContext context,
-                                    AsyncSnapshot snapshot) {
-                                  print("----${snapshot.data}");
-                                  if (!snapshot.hasData) return Container();
-                                  return FadeInImage.memoryNetwork(
-                                    width: double.infinity,
-                                    height: double.infinity,
-                                    fit: BoxFit.cover,
-                                    placeholder: kTransparentImage,
-                                    image: snapshot.data,
-                                  );
-                                },
-                              )),
-                          Container(
-                            padding: EdgeInsets.all(12),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                Text(event.name, style: TextStyle(color:Colors.white, fontSize: 25)),
-                                Text('at ${event.place}', style: TextStyle(color:Colors.white, fontSize: 15),)
-                              ])),
-                        ],
+                return Column(
+                  children: <Widget>[
+                    hasNewDate ? Text(date) : Container(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(18.0),
+                        child: Container(
+                          height: 100,
+                          child: Stack(
+                            children: <Widget>[
+                              ColorFiltered(
+                                  colorFilter: ColorFilter.mode(
+                                      Colors.grey, BlendMode.darken),
+                                  child: FutureBuilder(
+                                    future: foursquareBloc.getDummyPhoto(
+                                        place: event.place,
+                                        city: event.city,
+                                        foursquareKey: widget.foursquareKey),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot snapshot) {
+                                      print("----${snapshot.data}");
+                                      if (!snapshot.hasData) return Container();
+                                      return FadeInImage.memoryNetwork(
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                        fit: BoxFit.cover,
+                                        placeholder: kTransparentImage,
+                                        image: snapshot.data,
+                                      );
+                                    },
+                                  )),
+                              Container(
+                                  padding: EdgeInsets.all(12),
+                                  child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(event.name,
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 25)),
+                                        Text('at ${event.place}',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15)),
+                                        Align(
+                                            alignment: Alignment.centerRight,
+                                            child: Wrap(
+                                                crossAxisAlignment:
+                                                    WrapCrossAlignment.center,
+                                                children: [
+                                                  Icon(Icons.place,
+                                                      color: Colors.white),
+                                                  Text(event.city,
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 15))
+                                                ])),
+                                      ])),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ],
-            );
-          });
+                  ],
+                );
+              });
         },
       ),
     );
