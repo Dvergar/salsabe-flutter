@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+import 'event.dart';
 import 'foursquare_bloc.dart';
 import 'main.dart';
 
