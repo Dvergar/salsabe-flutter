@@ -131,7 +131,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
                 return Column(
                   children: <Widget>[
-                    hasNewDate ? Text(date) : Container(),
+                    hasNewDate ? Text(date, style: TextStyle(
+                                                    fontSize: 18)) : Container(),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: ClipRRect(
@@ -169,10 +170,19 @@ class _MyHomePageState extends State<MyHomePage> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(event.name,
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 25)),
+                                  
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Text(event.name,
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 25)),
+                                                    Text(event.hour, style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 20))
+                                          ],
+                                        ),
                                         Text('at ${event.place}',
                                             style: TextStyle(
                                                 color: Colors.white,
