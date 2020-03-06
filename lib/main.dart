@@ -4,8 +4,8 @@ import 'package:http/http.dart';
 import 'package:html/parser.dart';
 import 'package:html/dom.dart' as doom;
 import 'package:intl/intl.dart';
-import 'package:salsabe/foursquare_bloc.dart';
-import 'package:transparent_image/transparent_image.dart';
+
+import 'event_card.dart';
 
 void main() => runApp(MyApp());
 
@@ -53,18 +53,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  var selected = false;
+
   Future<List<Event>> scrape() async {
     List<Event> events = [];
 
     var client = Client();
     Response response =
         await client.get('http://www.salsa.be/vcalendar/week.php');
-    // Use html parser
     var document = parse(response.body);
-    // print(response.body);
     List<doom.Element> eventRows =
         document.querySelectorAll('table.Grid > tbody > tr');
     var date = "";
+    
     for (var eventRow in eventRows) {
       if (eventRow.attributes['class'] == 'GroupCaption') {
         date = eventRow.text.trim();
@@ -162,79 +163,9 @@ class _MyHomePageState extends State<MyHomePage> {
                             style: TextStyle(fontSize: 18))
                         : Container(),
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(18.0),
-                        child: Container(
-                          height: 100,
-                          child: Stack(
-                            children: <Widget>[
-                              ColorFiltered(
-                                  colorFilter: ColorFilter.mode(
-                                      Colors.grey, BlendMode.darken),
-                                  child: FutureBuilder(
-                                    future: foursquareBloc.getDummyPhoto(
-                                        place: event.place,
-                                        city: event.city,
-                                        foursquareKey: widget.foursquareKey),
-                                    builder: (BuildContext context,
-                                        AsyncSnapshot snapshot) {
-                                      print("----${snapshot.data}");
-                                      if (!snapshot.hasData) return Container();
-                                      return FadeInImage.memoryNetwork(
-                                        width: double.infinity,
-                                        height: double.infinity,
-                                        fit: BoxFit.cover,
-                                        placeholder: kTransparentImage,
-                                        image: snapshot.data,
-                                      );
-                                    },
-                                  )),
-                              Container(
-                                  padding: EdgeInsets.all(12),
-                                  child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Text(event.name,
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 25)),
-                                            Text(event.hour,
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 20))
-                                          ],
-                                        ),
-                                        Text('at ${event.place}',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15)),
-                                        Align(
-                                            alignment: Alignment.centerRight,
-                                            child: Wrap(
-                                                crossAxisAlignment:
-                                                    WrapCrossAlignment.center,
-                                                children: [
-                                                  Icon(Icons.place,
-                                                      color: Colors.white),
-                                                  Text(event.city,
-                                                      style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 15))
-                                                ])),
-                                      ])),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: EventCard(
+                            event: event, foursquareKey: widget.foursquareKey)),
                   ],
                 );
               });
