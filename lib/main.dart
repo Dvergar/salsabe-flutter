@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:html/parser.dart';
 import 'package:html/dom.dart' as doom;
+import 'package:intl/intl.dart';
 import 'package:salsabe/foursquare_bloc.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -106,6 +107,18 @@ class _MyHomePageState extends State<MyHomePage> {
     return events;
   }
 
+  beautifyDate(String input) {
+    var splitDate = input.split("/");
+    var day = splitDate[0].padLeft(2, '0');
+    var month = splitDate[1].padLeft(2, '0');
+    var year = splitDate[2];
+
+    var parsedDate = DateTime.parse('$year-$month-$day');
+    var output = DateFormat.yMMMMd("en_US").format(parsedDate);
+
+    return output;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -131,8 +144,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
                 return Column(
                   children: <Widget>[
-                    hasNewDate ? Text(date, style: TextStyle(
-                                                    fontSize: 18)) : Container(),
+                    hasNewDate
+                        ? Text(beautifyDate(date),
+                            style: TextStyle(fontSize: 18))
+                        : Container(),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: ClipRRect(
@@ -170,15 +185,16 @@ class _MyHomePageState extends State<MyHomePage> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                  
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: <Widget>[
                                             Text(event.name,
                                                 style: TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 25)),
-                                                    Text(event.hour, style: TextStyle(
+                                            Text(event.hour,
+                                                style: TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 20))
                                           ],
