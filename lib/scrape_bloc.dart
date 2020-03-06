@@ -5,8 +5,6 @@ import 'package:http/http.dart';
 import 'event.dart';
 
 class ScrapeBloc {
-
-
   Future<List<Event>> scrape() async {
     List<Event> events = [];
 

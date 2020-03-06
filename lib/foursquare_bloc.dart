@@ -1,22 +1,20 @@
 import 'dart:async';
-
 import 'dart:convert';
+import 'package:http/http.dart';
 
 import 'main.dart';
 
-import 'package:http/http.dart';
-
 class FoursquareBloc {
-
-  Future getDummyPhoto({String place, String city, FoursquareKey foursquareKey}) async {
+  Future getDummyPhoto(
+      {String place, String city, FoursquareKey foursquareKey}) async {
     // return "https://i.picsum.photos/id/15/400/200.jpg?blur=10";
     return "https://loremflickr.com/400/200/salsa,dance/all?lock=${place.hashCode}";
   }
 
   Future<String> getPhoto(
       {String place, String city, FoursquareKey foursquareKey}) async {
-
-    var photo = "https://via.placeholder.com/468x60?text=Visit+Blogging.com+Now";
+    var photo =
+        "https://via.placeholder.com/468x60?text=Visit+Blogging.com+Now";
     var venueId = await getVenueId(place, city, foursquareKey);
     print('venueid $venueId');
     if (venueId != null) photo = await getPhotoUrl(venueId, foursquareKey);
@@ -26,8 +24,7 @@ class FoursquareBloc {
 
   Future<String> getPhotoUrl(venueId, foursquareKey) async {
     print("|$venueId|");
-    var photoUrl =
-        "";
+    var photoUrl = "";
     var photosJson = await getJson(
         'https://api.foursquare.com/v2/venues/$venueId/photos?client_id=${foursquareKey.clientId}&client_secret=${foursquareKey.clientSecret}&v=20200303');
 
@@ -35,7 +32,7 @@ class FoursquareBloc {
     if (photosJson.containsKey('response') &&
         photosJson['response'].containsKey('photos') &&
         photosJson['response']['photos'].containsKey('items')) {
-          print("yep");
+      print("yep");
       var photos = photosJson['response']['photos']['items'];
       if (photos.length != 0) {
         print("suffix : ${photos[0]['suffix']}");
@@ -66,12 +63,6 @@ class FoursquareBloc {
   }
 
   Future<dynamic> getJson(String link) async {
-    // var res = await http.get(Uri.encodeFull(link),
-    //     headers: {"Accept": "application/json"});
-    // if (res.statusCode == 200) {
-    //   return json.decode(res.body);
-    // }
-    // return Future.error("NO RESULT");
     var client = Client();
     Response response = await client.get(link);
     return json.decode(response.body);

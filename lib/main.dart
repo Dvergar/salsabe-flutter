@@ -55,8 +55,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   var selected = false;
 
-
-
   beautifyDate(String input) {
     var splitDate = input.split("/");
     var day = splitDate[0].padLeft(2, '0');
@@ -123,4 +121,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
