@@ -6,6 +6,7 @@ class Event {
   String suffix;
   String date;
   String hour;
+  String link;
 
   Event(
       {this.name,
@@ -14,5 +15,6 @@ class Event {
       this.city,
       this.suffix,
       this.date,
-      this.hour});
+      this.hour,
+      this.link});
 }

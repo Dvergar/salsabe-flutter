@@ -5,13 +5,20 @@ import 'package:http/http.dart';
 import 'event.dart';
 
 class ScrapeBloc {
+
+  Future getDocument(url) async
+  {
+  var client = Client();
+    Response response =
+        await client.get(url);
+    return parse(response.body);
+  }
+
   Future<List<Event>> scrape() async {
     List<Event> events = [];
 
-    var client = Client();
-    Response response =
-        await client.get('http://www.salsa.be/vcalendar/week.php');
-    var document = parse(response.body);
+    var document = await getDocument('http://www.salsa.be/vcalendar/week.php');
+  
     List<doom.Element> eventRows =
         document.querySelectorAll('table.Grid > tbody > tr');
     var date = "";
@@ -23,6 +30,8 @@ class ScrapeBloc {
         var hourElement = eventRow.querySelector('th');
         if (hourElement == null) continue; // Empty row
         var hour = hourElement.text.trim();
+        var link = eventRow.querySelector('td a').attributes['href'];
+        print('Link $link');
         var description =
             eventRow.querySelector('td').text.replaceAll(RegExp(r'\s+'), " ");
         description = description.trim();
@@ -35,11 +44,7 @@ class ScrapeBloc {
         RegExp reCity = new RegExp(r'^.+?\d+ (.+?)(?: \([^()]+\))?$',
             caseSensitive: false, multiLine: true);
         var cityMatch = reCity.firstMatch(match.group(3));
-        // print(match.group(1));
-        // print(match.group(2));
-        // print(match.group(3));
-        // print(match.group(4));
-        // print(cityMatch.group(1));
+
         print("--------------");
 
         var event = Event(
@@ -49,7 +54,8 @@ class ScrapeBloc {
             city: cityMatch.group(1),
             suffix: match.group(4) ?? "N/A",
             date: date,
-            hour: hour);
+            hour: hour,
+            link: 'http://www.salsa.be/vcalendar/$link');
 
         events.add(event);
       }
