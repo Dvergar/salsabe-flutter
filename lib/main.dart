@@ -123,12 +123,19 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title, style: TextStyle(color: Colors.black),),
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Image.asset("assets/icon.png"),
+        ),
+        title: Text(
+          widget.title,
+          style: TextStyle(color: Colors.black),
+        ),
         shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        bottom: Radius.circular(10),
-      ),
-    ),
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(10),
+          ),
+        ),
         backgroundColor: Colors.white,
       ),
       body: FutureBuilder<List<Event>>(
