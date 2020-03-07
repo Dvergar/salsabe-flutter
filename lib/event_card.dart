@@ -68,7 +68,7 @@ class _EventCardState extends State<EventCard> {
               Container(
                   padding: EdgeInsets.all(12),
                   child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
@@ -85,6 +85,7 @@ class _EventCardState extends State<EventCard> {
                         Text('at ${widget.event.place}',
                             style:
                                 TextStyle(color: Colors.white, fontSize: 15)),
+                        Spacer(),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
