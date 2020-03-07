@@ -14,6 +14,22 @@ class ScrapeBloc {
     return parse(response.body);
   }
 
+  Future<Map<String, String>> scrapeEvent(String eventUrl) async {
+    var document = await getDocument(eventUrl);
+    var details =
+        document.querySelector('table.Grid > tbody > tr > td').text;
+
+RegExp re = new RegExp(r'Dj\(s\): (.+)',
+            caseSensitive: false, multiLine: true);
+        var match = re.firstMatch(details);
+        print(match.group(1));
+
+var dj = match.group(1);
+
+    return {'dj':dj};
+  }
+
+
   Future<List<Event>> scrape() async {
     List<Event> events = [];
 
