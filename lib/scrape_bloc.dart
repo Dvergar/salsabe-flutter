@@ -3,38 +3,34 @@ import 'package:html/parser.dart';
 import 'package:http/http.dart';
 
 import 'event.dart';
+import 'details.dart';
 
 class ScrapeBloc {
-
-  Future getDocument(url) async
-  {
-  var client = Client();
-    Response response =
-        await client.get(url);
+  Future getDocument(url) async {
+    var client = Client();
+    Response response = await client.get(url);
     return parse(response.body);
   }
 
-  Future<Map<String, String>> scrapeEvent(String eventUrl) async {
+  Future<Details> scrapeEvent(String eventUrl) async {
     var document = await getDocument(eventUrl);
-    var details =
-        document.querySelector('table.Grid > tbody > tr > td').text;
+    var details = document.querySelector('table.Grid > tbody > tr > td').text;
 
-RegExp re = new RegExp(r'Dj\(s\): (.+)',
-            caseSensitive: false, multiLine: true);
-        var match = re.firstMatch(details);
-        print(match.group(1));
+    RegExp re =
+        new RegExp(r'Dj\(s\): (.+)', caseSensitive: false, multiLine: true);
+    var match = re.firstMatch(details);
+    print(match.group(1));
 
-var dj = match.group(1);
+    var dj = match.group(1);
 
-    return {'dj':dj};
+    return Details(dj: dj);
   }
-
 
   Future<List<Event>> scrape() async {
     List<Event> events = [];
 
     var document = await getDocument('http://www.salsa.be/vcalendar/week.php');
-  
+
     List<doom.Element> eventRows =
         document.querySelectorAll('table.Grid > tbody > tr');
     var date = "";

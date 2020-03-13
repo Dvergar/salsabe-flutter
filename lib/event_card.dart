@@ -3,6 +3,7 @@ import 'package:salsabe/scrape_bloc.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import 'event.dart';
+import 'details.dart';
 import 'foursquare_bloc.dart';
 import 'main.dart';
 
@@ -18,7 +19,8 @@ class EventCard extends StatefulWidget {
 
 class _EventCardState extends State<EventCard> {
   var selected = false;
-  Map<String, String> details;
+  Details details = Details();
+  bool detailsFetched = false;
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +28,10 @@ class _EventCardState extends State<EventCard> {
       borderRadius: BorderRadius.circular(18.0),
       child: GestureDetector(
         onTap: () {
-          if (details == null) {
+          if (!detailsFetched) {
             scrapeBloc.scrapeEvent(widget.event.link).then((details) {
               this.details = details;
+              this.detailsFetched = true;
               setState(() {
                 selected = true;
               });
@@ -89,24 +92,31 @@ class _EventCardState extends State<EventCard> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            (details != null && selected) ?
-                              Wrap(
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                                children: <Widget>[
-                                  Icon(Icons.music_note, color: Colors.white),
-                                  Text(' DJ ${details['dj']}',
-                                      style: TextStyle(color: Colors.white)),
-                                ],
-                              ):Container(),
+                             AnimatedOpacity(
+                                    opacity: selected ? 1.0 : 0.0,
+                                    duration: Duration(milliseconds: 500),
+                                    child:  Wrap(
+                                      crossAxisAlignment:
+                                          WrapCrossAlignment.center,
+                                      children: <Widget>[
+                                        Icon(Icons.music_note,
+                                            color: Colors.white),
+                                        Text(' DJ ${details.dj??'lol'}',
+                                            style:
+                                                TextStyle(color: Colors.white)),
+                                      ],
+                                    ),
+                                  )
+                                ,
                             Wrap(
-                            // alignment: WrapAlignment.end,
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              children: [
-                                Icon(Icons.place, color: Colors.white),
-                                Text(widget.event.city,
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 15))
-                              ]),
+                                // alignment: WrapAlignment.end,
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                children: [
+                                  Icon(Icons.place, color: Colors.white),
+                                  Text(widget.event.city,
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 15))
+                                ]),
                           ],
                         ),
                       ])),
