@@ -16,14 +16,19 @@ class ScrapeBloc {
     var document = await getDocument(eventUrl);
     var details = document.querySelector('table.Grid > tbody > tr > td').text;
 
-    RegExp re =
-        new RegExp(r'Dj\(s\): (.+)', caseSensitive: false, multiLine: true);
+    RegExp re = new RegExp(
+        r'Added by:.+\n([\s\S]+)Address: (.+)\n[\s\S]+Entrance €: (.+)\n[\s\S]+Doors: (.+)\n[\s\S]+Dj\(s\): (.+)\n[\s\S]+End of party at : (.+)',
+        caseSensitive: false,
+        multiLine: false);
     var match = re.firstMatch(details);
-    print(match.group(1));
 
-    var dj = match.group(1);
-
-    return Details(dj: dj);
+    return Details(
+        description: match.group(1),
+        address: match.group(2),
+        entrance: match.group(3),
+        doors: match.group(4),
+        dj: match.group(5),
+        end: match.group(6));
   }
 
   Future<List<Event>> scrape() async {
