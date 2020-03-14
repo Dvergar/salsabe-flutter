@@ -17,6 +17,8 @@ class ScrapeBloc {
     var document = await getDocument(eventUrl);
     var details = document.querySelector('table.Grid > tbody > tr > td').text;
 
+    print(details);
+
     return Details(
         description: RegExp(r'Added by:.+\s*(.+)\s*Salseros')
             .firstMatch(details)

@@ -44,7 +44,7 @@ class _EventCardState extends State<EventCard> {
           });
         },
         child: AnimatedContainer(
-          height: selected ? 200 : 100,
+          height: selected ? 200 : 150,
           duration: Duration(seconds: 2),
           curve: Curves.fastOutSlowIn,
           child: Stack(
@@ -71,15 +71,16 @@ class _EventCardState extends State<EventCard> {
               Container(
                   padding: EdgeInsets.all(12),
                   child: Column(
-                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
+                            // EVENT NAME
                             Text(widget.event.name,
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 25)),
+                            // HOURS
                             Text(widget.event.hour,
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 20))
@@ -95,28 +96,31 @@ class _EventCardState extends State<EventCard> {
                               duration: Duration(milliseconds: 500),
                               child: Wrap(
                                 children: <Widget>[
-                                  Text('- ${widget.event.shortAddress}', style: TextStyle(
-                                    color: Colors.white, fontSize: 15)),
+                                  Text('- ${widget.event.shortAddress}',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 15)),
                                 ],
                               ),
                             )
                           ],
                         ),
+                        Spacer(),
                         AnimatedCrossFade(
-                          duration: const Duration(seconds: 1),
-                          firstChild: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(details.description ?? '',
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 20)),
-                              ]),
+                          duration: const Duration(milliseconds: 500),
+                          firstChild: Text(details.description??'',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20)),
                           secondChild: Container(),
                           crossFadeState: selected
                               ? CrossFadeState.showFirst
                               : CrossFadeState.showSecond,
                         ),
+                        // AnimatedOpacity(
+                        //     opacity: selected ? 1.0 : 0.0,
+                        //     duration: Duration(milliseconds: 500),
+                        //     child: Text(details.description ?? '',
+                        //         style: TextStyle(
+                        //             color: Colors.white, fontSize: 25))),
                         Spacer(),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
