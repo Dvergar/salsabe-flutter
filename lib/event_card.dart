@@ -85,29 +85,54 @@ class _EventCardState extends State<EventCard> {
                                     color: Colors.white, fontSize: 20))
                           ],
                         ),
-                        Text('at ${widget.event.place}',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 15)),
+                        Wrap(
+                          children: <Widget>[
+                            Text('at ${widget.event.place}',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15)),
+                            AnimatedOpacity(
+                              opacity: selected ? 1.0 : 0.0,
+                              duration: Duration(milliseconds: 500),
+                              child: Wrap(
+                                children: <Widget>[
+                                  Text('- ${widget.event.shortAddress}', style: TextStyle(
+                                    color: Colors.white, fontSize: 15)),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                        AnimatedCrossFade(
+                          duration: const Duration(seconds: 1),
+                          firstChild: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(details.description ?? '',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20)),
+                              ]),
+                          secondChild: Container(),
+                          crossFadeState: selected
+                              ? CrossFadeState.showFirst
+                              : CrossFadeState.showSecond,
+                        ),
                         Spacer(),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                             AnimatedOpacity(
-                                    opacity: selected ? 1.0 : 0.0,
-                                    duration: Duration(milliseconds: 500),
-                                    child:  Wrap(
-                                      crossAxisAlignment:
-                                          WrapCrossAlignment.center,
-                                      children: <Widget>[
-                                        Icon(Icons.music_note,
-                                            color: Colors.white),
-                                        Text(' DJ ${details.dj??'lol'}',
-                                            style:
-                                                TextStyle(color: Colors.white)),
-                                      ],
-                                    ),
-                                  )
-                                ,
+                            AnimatedOpacity(
+                              opacity: selected ? 1.0 : 0.0,
+                              duration: Duration(milliseconds: 500),
+                              child: Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                children: <Widget>[
+                                  Icon(Icons.music_note, color: Colors.white),
+                                  Text(' DJ ${details.dj}',
+                                      style: TextStyle(color: Colors.white)),
+                                ],
+                              ),
+                            ),
                             Wrap(
                                 // alignment: WrapAlignment.end,
                                 crossAxisAlignment: WrapCrossAlignment.center,

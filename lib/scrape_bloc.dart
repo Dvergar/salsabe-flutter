@@ -12,23 +12,20 @@ class ScrapeBloc {
     return parse(response.body);
   }
 
+  // https://regex101.com/r/lFCDTj/2
   Future<Details> scrapeEvent(String eventUrl) async {
     var document = await getDocument(eventUrl);
     var details = document.querySelector('table.Grid > tbody > tr > td').text;
 
-    RegExp re = new RegExp(
-        r'Added by:.+\n([\s\S]+)Address: (.+)\n[\s\S]+Entrance €: (.+)\n[\s\S]+Doors: (.+)\n[\s\S]+Dj\(s\): (.+)\n[\s\S]+End of party at : (.+)',
-        caseSensitive: false,
-        multiLine: false);
-    var match = re.firstMatch(details);
-
     return Details(
-        description: match.group(1),
-        address: match.group(2),
-        entrance: match.group(3),
-        doors: match.group(4),
-        dj: match.group(5),
-        end: match.group(6));
+        description: RegExp(r'Added by:.+\s*(.+)\s*Salseros')
+            .firstMatch(details)
+            ?.group(1),
+        address: RegExp(r'Address: (.+)').firstMatch(details)?.group(1),
+        entrance: RegExp(r'Entrance €: (.+)').firstMatch(details)?.group(1),
+        doors: RegExp(r'Doors: (.+)').firstMatch(details)?.group(1),
+        dj: RegExp(r'Dj\(s\): (.+)').firstMatch(details)?.group(1),
+        end: RegExp(r'End of party at : (.+)').firstMatch(details)?.group(1));
   }
 
   Future<List<Event>> scrape() async {

@@ -17,4 +17,8 @@ class Event {
       this.date,
       this.hour,
       this.link});
+
+  String get shortAddress {
+    return address.split(this.city)[0];
+  }
 }
