@@ -74,16 +74,25 @@ class _EventCardState extends State<EventCard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             // EVENT NAME
-                            Text(widget.event.name,
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 25)),
+                            Flexible(
+                              flex: 3,
+                              child: Text(widget.event.name,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 25)),
+                            ),
                             // HOURS
-                            Text(widget.event.hour,
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 20))
+                            Flexible(
+                              flex: 1,
+                              child: Text(widget.event.hour,
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 20)),
+                            ),
                           ],
                         ),
                         Wrap(
@@ -107,7 +116,7 @@ class _EventCardState extends State<EventCard> {
                         Spacer(),
                         AnimatedCrossFade(
                           duration: const Duration(milliseconds: 500),
-                          firstChild: Text(details.description??'',
+                          firstChild: Text(details.description ?? '',
                               style:
                                   TextStyle(color: Colors.white, fontSize: 20)),
                           secondChild: Container(),

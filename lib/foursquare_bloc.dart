@@ -32,10 +32,8 @@ class FoursquareBloc {
     if (photosJson.containsKey('response') &&
         photosJson['response'].containsKey('photos') &&
         photosJson['response']['photos'].containsKey('items')) {
-      print("yep");
       var photos = photosJson['response']['photos']['items'];
       if (photos.length != 0) {
-        print("suffix : ${photos[0]['suffix']}");
         var imageName = photos[0]['suffix'];
         photoUrl = 'https://igx.4sqi.net/img/general/300x100$imageName';
       }
