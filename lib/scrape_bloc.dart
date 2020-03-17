@@ -46,8 +46,9 @@ class ScrapeBloc {
         var hourElement = eventRow.querySelector('th');
         if (hourElement == null) continue; // Empty row
         var hour = hourElement.text.trim();
+
         var link = eventRow.querySelector('td a').attributes['href'];
-        print('Link $link');
+
         var description =
             eventRow.querySelector('td').text.replaceAll(RegExp(r'\s+'), " ");
         description = description.trim();
@@ -70,7 +71,7 @@ class ScrapeBloc {
             city: cityMatch.group(1),
             suffix: match.group(4) ?? "N/A",
             date: date,
-            hour: hour,
+            hour: hour != "" ? hour: "N/A",
             link: 'http://www.salsa.be/vcalendar/$link');
 
         events.add(event);
