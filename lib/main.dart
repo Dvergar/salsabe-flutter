@@ -1,3 +1,4 @@
+import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -53,6 +54,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   var selected = false;
+  var currentPage = 0;
 
   beautifyDate(String input) {
     var splitDate = input.split("/");
@@ -115,6 +117,17 @@ class _MyHomePageState extends State<MyHomePage> {
                   ],
                 );
               });
+        },
+      ),
+      bottomNavigationBar: FancyBottomNavigation(
+        tabs: [
+          TabData(iconData: Icons.today, title: "Today"),
+          TabData(iconData: Icons.view_week, title: "Week"),
+        ],
+        onTabChangedListener: (position) {
+          setState(() {
+            currentPage = position;
+          });
         },
       ),
     );

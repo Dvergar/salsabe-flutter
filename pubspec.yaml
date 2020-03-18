@@ -27,6 +27,7 @@ dependencies:
   http:
   transparent_image:
   intl:
+  fancy_bottom_navigation: ^0.3.2
 
 dev_dependencies:
   flutter_test:
