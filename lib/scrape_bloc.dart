@@ -33,31 +33,40 @@ class ScrapeBloc {
   Future<List<Event>> scrape() async {
     List<Event> events = [];
 
+    // GET DOCUMENT
     var document = await getDocument('http://www.salsa.be/vcalendar/week.php');
 
+    // GET ELEMENTS
     List<doom.Element> eventRows =
         document.querySelectorAll('table.Grid > tbody > tr');
     var date = "";
 
+    // PARSE ELEMENTS
     for (var eventRow in eventRows) {
       if (eventRow.attributes['class'] == 'GroupCaption') {
+        // DATE
         date = eventRow.text.trim();
       } else {
+        // HOUR
         var hourElement = eventRow.querySelector('th');
         if (hourElement == null) continue; // Empty row
         var hour = hourElement.text.trim();
 
+        // LINK
         var link = eventRow.querySelector('td a').attributes['href'];
 
+        // DESCRIPTION
         var description =
             eventRow.querySelector('td').text.replaceAll(RegExp(r'\s+'), " ");
         description = description.trim();
 
+        // REGEX ALL
         RegExp re = new RegExp(r'(.+?) - (?:(.+?) - )?(.+?)(?: \(([^()]+)\))?$',
             caseSensitive: false, multiLine: true);
         var match = re.firstMatch(description);
         if (match != null) print('|${match.group(0)}|');
 
+        // REGEX CITY
         RegExp reCity = new RegExp(r'^.+?\d+ (.+?)(?: \([^()]+\))?$',
             caseSensitive: false, multiLine: true);
         var cityMatch = reCity.firstMatch(match.group(3));
@@ -71,7 +80,7 @@ class ScrapeBloc {
             city: cityMatch.group(1),
             suffix: match.group(4) ?? "N/A",
             date: date,
-            hour: hour != "" ? hour: "N/A",
+            hour: hour != "" ? hour : "N/A",
             link: 'http://www.salsa.be/vcalendar/$link');
 
         events.add(event);
