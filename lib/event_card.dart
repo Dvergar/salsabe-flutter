@@ -124,12 +124,6 @@ class _EventCardState extends State<EventCard> {
                               ? CrossFadeState.showFirst
                               : CrossFadeState.showSecond,
                         ),
-                        // AnimatedOpacity(
-                        //     opacity: selected ? 1.0 : 0.0,
-                        //     duration: Duration(milliseconds: 500),
-                        //     child: Text(details.description ?? '',
-                        //         style: TextStyle(
-                        //             color: Colors.white, fontSize: 25))),
                         Spacer(),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -147,7 +141,6 @@ class _EventCardState extends State<EventCard> {
                               ),
                             ),
                             Wrap(
-                                // alignment: WrapAlignment.end,
                                 crossAxisAlignment: WrapCrossAlignment.center,
                                 children: [
                                   Icon(Icons.place, color: Colors.white),
