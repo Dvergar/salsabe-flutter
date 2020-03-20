@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
+import 'credits.dart';
 import 'event.dart';
 import 'event_card.dart';
 import 'scrape_bloc.dart';
@@ -86,6 +87,19 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         backgroundColor: Colors.white,
+          actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.help_outline, color: Colors.black45),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return Credits();
+                },
+              );
+            },
+          ),
+        ],
       ),
       body: FutureBuilder<List<Event>>(
         future: scrapeBloc.scrape(currentPage),
