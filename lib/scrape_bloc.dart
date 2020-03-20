@@ -30,11 +30,16 @@ class ScrapeBloc {
         end: RegExp(r'End of party at : (.+)').firstMatch(details)?.group(1));
   }
 
-  Future<List<Event>> scrape() async {
+  Future<List<Event>> scrape(int pageType) async {
     List<Event> events = [];
 
     // GET DOCUMENT
-    var document = await getDocument('http://www.salsa.be/vcalendar/week.php');
+    String url;
+    if (pageType == ScreenType.week.index)
+      url = 'http://www.salsa.be/vcalendar/week.php';
+    if (pageType == ScreenType.today.index)
+      url = 'http://www.salsa.be/vcalendar/day.php';
+    var document = await getDocument(url);
 
     // GET ELEMENTS
     List<doom.Element> eventRows =
@@ -92,3 +97,8 @@ class ScrapeBloc {
 }
 
 final scrapeBloc = ScrapeBloc();
+
+enum ScreenType {
+  today,
+  week,
+}

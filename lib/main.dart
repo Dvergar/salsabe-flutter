@@ -88,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.white,
       ),
       body: FutureBuilder<List<Event>>(
-        future: scrapeBloc.scrape(),
+        future: scrapeBloc.scrape(currentPage),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (!snapshot.hasData) return Container();
           List<Event> events = snapshot.data;
