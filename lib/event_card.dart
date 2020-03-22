@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:salsabe/scrape_bloc.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'event.dart';
 import 'details.dart';
@@ -21,6 +22,15 @@ class _EventCardState extends State<EventCard> {
   var selected = false;
   Details details = Details();
   bool detailsFetched = false;
+
+  Future<void> openMap(String query) async {
+    String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$query';
+    if (await canLaunch(googleUrl)) {
+      await launch(googleUrl);
+    } else {
+      throw 'Could not open the map.';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,11 +105,24 @@ class _EventCardState extends State<EventCard> {
                             ),
                           ],
                         ),
+                        SizedBox(height: 10),
                         Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
                           children: <Widget>[
-                            Text('at ${widget.event.place}',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 15)),
+                            Container(
+                                height: 25,
+                                child: RaisedButton.icon(
+                                    onPressed: () {
+                                      openMap(
+                                          '${widget.event.place}, ${widget.event.shortAddress}');
+                                    },
+                                    icon: Icon(Icons.location_on,
+                                        color: Colors.white),
+                                    label: Text(
+                                      "at ${widget.event.place}",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    color: Colors.white30)),
                             AnimatedOpacity(
                               opacity: selected ? 1.0 : 0.0,
                               duration: Duration(milliseconds: 500),
@@ -143,8 +166,9 @@ class _EventCardState extends State<EventCard> {
                             Wrap(
                                 crossAxisAlignment: WrapCrossAlignment.center,
                                 children: [
-                                  Icon(Icons.place, color: Colors.white),
-                                  Text(widget.event.city,
+                                  Icon(Icons.location_city,
+                                      color: Colors.white),
+                                  Text(' ${widget.event.city}',
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 15))
                                 ]),
